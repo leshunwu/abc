@@ -18,6 +18,21 @@ References:
 
 [1] L. Fan and C. Wu, "FPGA technology mapping with adaptive gate decompostion", ACM/SIGDA FPGA International Symposium on FPGAs, 2023. 
 
+## Using the GUI:
+
+ABC now includes a graphical user interface for easier interaction. To use the GUI:
+
+ * Make sure ABC is compiled: `make`
+ * Run the GUI: `python3 abc_gui.py`
+
+The GUI provides:
+ * File loading for AIGER, BLIF, Bench, PLA, and Verilog files
+ * Command execution with output display
+ * Quick action buttons for common operations
+ * Real-time status updates
+
+Requirements: Python 3 with tkinter (typically included with Python)
+
 ## Compiling:
 
 To compile ABC as a binary, download and unzip the code, then type `make`.
