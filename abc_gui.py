@@ -9,6 +9,7 @@ from tkinter import ttk, scrolledtext, filedialog, messagebox
 import subprocess
 import os
 import threading
+import shlex
 
 class AbcGUI:
     def __init__(self, root):
@@ -119,19 +120,21 @@ class AbcGUI:
             self.file_label.config(text=os.path.basename(filename), foreground="black")
             
             # Determine read command based on file extension
+            # Using shlex.quote for safety, though subprocess list format already protects us
+            safe_filename = shlex.quote(filename)
             ext = os.path.splitext(filename)[1].lower()
             if ext == '.aig':
-                cmd = f"read {filename}"
+                cmd = f"read {safe_filename}"
             elif ext == '.blif':
-                cmd = f"read_blif {filename}"
+                cmd = f"read_blif {safe_filename}"
             elif ext == '.bench':
-                cmd = f"read_bench {filename}"
+                cmd = f"read_bench {safe_filename}"
             elif ext == '.pla':
-                cmd = f"read_pla {filename}"
+                cmd = f"read_pla {safe_filename}"
             elif ext == '.v':
-                cmd = f"read_verilog {filename}"
+                cmd = f"read_verilog {safe_filename}"
             else:
-                cmd = f"read {filename}"
+                cmd = f"read {safe_filename}"
             
             self.append_output(f"\n=== Loading file: {os.path.basename(filename)} ===\n")
             self.execute_abc_command(cmd)
@@ -160,10 +163,11 @@ class AbcGUI:
                 command_parts = command.strip().split()
                 first_cmd = command_parts[0] if command_parts else ""
                 
-                # Build the full command string
+                # Build the command string
                 if self.current_file and first_cmd not in ['read', 'read_blif', 'read_bench', 'read_pla', 'read_verilog', 'write', 'write_blif', 'write_verilog', 'help']:
-                    # For commands that need a loaded file
-                    abc_cmd = f"read {self.current_file}; {command}"
+                    # For commands that need a loaded file, use shlex.quote for safety
+                    safe_filename = shlex.quote(self.current_file)
+                    abc_cmd = f"read {safe_filename}; {command}"
                 else:
                     abc_cmd = command
                 
