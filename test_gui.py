@@ -73,8 +73,8 @@ def test_example_file():
         print(f"✓ Example file found at {example_path}")
         return True
     else:
-        print(f"ℹ Example file not found at {example_path} (optional)")
-        return True  # Not critical
+        print(f"ℹ Example file i10.aig not found (optional - GUI will work without it)")
+        return True  # Not critical, GUI can still function
 
 def main():
     """Run all tests"""

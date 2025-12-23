@@ -156,15 +156,19 @@ class AbcGUI:
         
         def run_command():
             try:
-                # Build the full command
-                if self.current_file and not any(cmd in command for cmd in ['read', 'write', 'help']):
-                    # For commands that need a loaded file
-                    full_cmd = f"{self.abc_path} -c \"read {self.current_file}; {command}\""
-                else:
-                    full_cmd = f"{self.abc_path} -c \"{command}\""
+                # Build the command - check if command starts with specific keywords
+                command_parts = command.strip().split()
+                first_cmd = command_parts[0] if command_parts else ""
                 
-                # Execute the command
-                process = subprocess.Popen(full_cmd, shell=True, 
+                # Build the full command string
+                if self.current_file and first_cmd not in ['read', 'read_blif', 'read_bench', 'read_pla', 'read_verilog', 'write', 'write_blif', 'write_verilog', 'help']:
+                    # For commands that need a loaded file
+                    abc_cmd = f"read {self.current_file}; {command}"
+                else:
+                    abc_cmd = command
+                
+                # Execute the command safely using list format to avoid shell injection
+                process = subprocess.Popen([self.abc_path, "-c", abc_cmd], 
                                          stdout=subprocess.PIPE, 
                                          stderr=subprocess.PIPE,
                                          text=True)
